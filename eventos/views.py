@@ -58,12 +58,14 @@ def inscrever_evento(request, id):
     if request.method == "GET":
         return render(request, 'inscrever_evento.html', {'evento':evento})
     elif request.method == "POST":
+        #Validar se o usuario já é um participante
+
         evento.partcipantes.add(request.user)
         evento.save()
 
         messages.add_message(request, constants.SUCCESS, 'Inscrição realizada com sucesso.')
 
-        return redirect(f'/eventos/inscrever_evento/{evento.id}')
+        return redirect(f'/eventos/inscrever_evento/{id}/')
 
     
 

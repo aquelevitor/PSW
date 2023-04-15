@@ -6,18 +6,17 @@
     <br>
     <div class="container">
         <div class="row">
-            {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert {{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-                <br>
             <div class="col-md-3">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <br>
                     <img width="100%" src="{{evento.logo.url}}">
                     <h3>{{evento.nome}}</h3> 
             </div>
             <hr>
-
 
 
             <div class="col-md-6">
@@ -26,14 +25,15 @@
                 <p>{{evento.data_inicio}} a {{evento.data_termino}}</p>
 
 
-                    {% if request.user in evento.participantes.all %}
-                        <input style="border-color: green;" type="submit" class="btn-principal" value="JÁ ESTÁ PARTICIPANDO" disabled>
-                    {% else%}
-                        <form action="{% url 'inscrever_evento' evento.id %}" method="POST">{% csrf_token %}
-                            <input type="submit" class="btn-principal" value="QUERO PARTICIPAR">
-                        </form>
-                    {% endif %}
-                
+
+            {% if request.user in evento.participantes.all %}
+                <input style="border-color: green;" type="submit" class="btn-principal" value="JÁ ESTÁ PARTICIPANDO" disabled>
+            {% else %}
+                <form action="{% url 'inscrever_evento' evento.id %}" method="POST">{% csrf_token %}
+                    <input type="submit" class="btn-principal" value="QUERO PARTICIPAR">
+                </form>
+            {% endif %}
+
 
             </div>
         </div>
