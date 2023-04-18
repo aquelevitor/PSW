@@ -97,3 +97,11 @@ def gerar_csv(request, id):
             writer.writerow(x)
 
     return redirect(f'/media/{token}')
+
+def Certificados(request,id):
+    evento = get_object_or_404(Evento, id=id)
+    if not evento.criador == request.user:
+        raise Http404("Esse evento não é seu")
+    
+    if request.method == "GET":
+        return render(request, 'certificados_evento.html')
