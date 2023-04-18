@@ -106,3 +106,5 @@ def certificados_evento(request,id):
     if request.method == "GET":
         qtd_certificados = evento.participantes.all().count() - Certificado.objects.filter(evento = evento).count()
         return render(request, 'certificados_evento.html', {'qtd_certificados': qtd_certificados, 'evento': evento})
+
+def gerar_certificado(request,id):
