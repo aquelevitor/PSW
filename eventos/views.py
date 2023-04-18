@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Evento
+from .models import Evento, Certificado
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.messages import constants
@@ -104,4 +104,5 @@ def Certificados(request,id):
         raise Http404("Esse evento não é seu")
     
     if request.method == "GET":
-        return render(request, 'certificados_evento.html')
+        qtd_certificados = evento.participantes.all().count() - Certificado.objects.filter(evento = evento).count()
+        return render(request, 'certificados_evento.html', {'qtd_certificados': qtd_certificados})
