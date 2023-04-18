@@ -9,6 +9,7 @@ import csv
 from secrets import token_urlsafe
 import os
 from django.conf import settings
+from PIL import Image, ImageDraw, ImageFont
 
 @login_required
 def novo_evento(request):
@@ -107,4 +108,28 @@ def certificados_evento(request,id):
         qtd_certificados = evento.participantes.all().count() - Certificado.objects.filter(evento = evento).count()
         return render(request, 'certificados_evento.html', {'qtd_certificados': qtd_certificados, 'evento': evento})
 
+from io import BytesIO
+
 def gerar_certificado(request,id):
+    evento = get_object_or_404(Evento, id=id)
+    if not evento.criador == request.user:
+        raise Http404("Esse evento não é seu")
+    
+    path_template = os.path.join(settings.BASE_DIR, 'templates/static/evento/img/template_certificado.png')
+    path_fonte = os.path.join(settings.BASE_DIR, 'templates/static/fontes/arimo.ttf')
+
+    for participante in evento.participantes.all():
+        #TODO: Validar se o certificado já foi gerado
+        img = Image.open(path_template)
+        draw = ImageDraw.Draw(img)
+
+        fonte_nome = ImageFont.truetype(path_fonte, 80)
+        fonte_info = ImageFont.truetype(path_fonte, 30)
+
+        draw.text((230,651), f"{participante.username}", font=fonte_nome, fill=(0,0,0))
+        draw.text((761,782), f"{evento.nome}", font=fonte_info, fill=(0,0,0))
+        draw.text((816,849), f"{evento.carga_horaria}", font=fonte_info, fill=(0,0,0))
+
+        output = BytesIO()
+        img.save(output, format='PNG', quality=100)
+
