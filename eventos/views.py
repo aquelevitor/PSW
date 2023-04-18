@@ -109,6 +109,8 @@ def certificados_evento(request,id):
         return render(request, 'certificados_evento.html', {'qtd_certificados': qtd_certificados, 'evento': evento})
 
 from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
 
 def gerar_certificado(request,id):
     evento = get_object_or_404(Evento, id=id)
@@ -132,4 +134,23 @@ def gerar_certificado(request,id):
 
         output = BytesIO()
         img.save(output, format='PNG', quality=100)
+        output.seek(0)
+
+        img_final = InMemoryUploadedFile(output, 
+                                         'ImageField',
+                                         f'{token_urlsafe(8)}.png',
+                                         'image/jpeg',
+                                         sys.getsizeof(output),
+                                         None)
+        
+        certificado_gerado = Certificado(
+            certificado=img_final,
+            participante=participante,
+            evento=evento
+        )
+
+        certificado_gerado.save()
+
+    messages.add_message(request, constants.SUCCESS, 'Certificados gerados com sucesso')
+    return redirect(reverse('certificados_evento', kwargs={'id': evento.id}))
 
