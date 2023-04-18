@@ -37,8 +37,10 @@
         <hr>
 
         <div class="row">
-            <h5>{{qtd_certificados}} Certificados para serem gerados</h5>            
+            <h5>{{qtd_certificados}} Certificados para serem gerados</h5>  
+            {% if qtd_certificados > 0 %}          
                 <a href="#" class="btn-principal link" style="width: 40%">GERAR TODOS OS CERTIFICADOS</a>
+            {% endif %}    
         </div>
         <hr>
 

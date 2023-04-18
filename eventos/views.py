@@ -98,11 +98,11 @@ def gerar_csv(request, id):
 
     return redirect(f'/media/{token}')
 
-def Certificados(request,id):
+def certificados_evento(request,id):
     evento = get_object_or_404(Evento, id=id)
     if not evento.criador == request.user:
         raise Http404("Esse evento não é seu")
     
     if request.method == "GET":
         qtd_certificados = evento.participantes.all().count() - Certificado.objects.filter(evento = evento).count()
-        return render(request, 'certificados_evento.html', {'qtd_certificados': qtd_certificados})
+        return render(request, 'certificados_evento.html', {'qtd_certificados': qtd_certificados, 'evento': evento})
